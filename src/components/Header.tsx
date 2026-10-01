@@ -2,7 +2,7 @@ function Header() {
   return (
     <header className="header">
       <div className="container header-inner">
-        <div className="brand">redBus</div>
+        <div className="brand">AbhiBus</div>
         <nav className="nav-main">
           <a className="nav-item active" href="#">
             <span className="nav-icon">🚌</span>Bus tickets
