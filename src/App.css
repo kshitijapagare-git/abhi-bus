@@ -103,6 +103,28 @@ button { font: inherit; cursor: pointer; }
   background: var(--red); color: #fff; font-size: 18px; font-weight: 700;
 }
 
+/* City autocomplete */
+.city-field { position: relative; }
+.city-autocomplete { position: relative; flex: 1; width: 100%; }
+.city-autocomplete input { border: 0; outline: 0; font: inherit; font-size: 18px; width: 100%; background: transparent; }
+.city-autocomplete-list {
+  position: absolute; top: calc(100% + 8px); left: -20px; right: -20px; z-index: 10;
+  background: #fff; border: 1px solid var(--line); border-radius: 12px; list-style: none;
+  margin: 0; padding: 6px; box-shadow: 0 4px 16px rgb(0 0 0 / 0.12); max-height: 260px; overflow-y: auto;
+}
+.city-option { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: 8px; cursor: pointer; }
+.city-option-active, .city-option:hover { background: var(--red-soft); }
+.city-option-name { font-weight: 600; }
+.city-option-state { color: var(--muted); font-size: 13px; }
+.field-error { display: block; color: var(--red); font-size: 12px; margin-top: 4px; }
+
+/* Swap button */
+.swap-btn {
+  flex: 0 0 auto; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line);
+  background: #fff; font-size: 18px; display: flex; align-items: center; justify-content: center;
+  align-self: center; z-index: 1;
+}
+
 /* Sections */
 .section { padding-top: 72px; }
 .section-head { display: flex; justify-content: space-between; align-items: center; }

@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import CityAutocomplete from './CityAutocomplete'
+import { cities } from '../data'
 
 const formatDate = (d: Date) =>
   `${String(d.getDate()).padStart(2, '0')} ${d.toLocaleString('en-US', { month: 'short' })}, ${d.getFullYear()}`
@@ -8,21 +10,83 @@ function SearchCard() {
   const [dayOffset, setDayOffset] = useState(0)
   const [forWomen, setForWomen] = useState(false)
 
+  const [fromText, setFromText] = useState('')
+  const [fromCityId, setFromCityId] = useState<number | null>(null)
+  const [toText, setToText] = useState('')
+  const [toCityId, setToCityId] = useState<number | null>(null)
+  const [fromError, setFromError] = useState<string | undefined>(undefined)
+  const [toError, setToError] = useState<string | undefined>(undefined)
+  const [closeSignal, setCloseSignal] = useState(0)
+
   const date = new Date(today)
   date.setDate(today.getDate() + dayOffset)
+
+  const getCityName = (cityId: number | null) => {
+    if (cityId === null) return ''
+    return cities.find((c) => c.id === cityId)?.name ?? ''
+  }
+
+  const handleSwap = () => {
+    const newFromCityId = toCityId
+    const newToCityId = fromCityId
+    setFromCityId(newFromCityId)
+    setToCityId(newToCityId)
+    setFromText(getCityName(newFromCityId))
+    setToText(getCityName(newToCityId))
+    setCloseSignal((c) => c + 1)
+  }
+
+  const handleSearch = () => {
+    let nextFromError: string | undefined
+    let nextToError: string | undefined
+
+    if (fromCityId === null) nextFromError = 'Please select a valid city'
+    if (toCityId === null) nextToError = 'Please select a valid city'
+
+    if (fromCityId !== null && toCityId !== null && fromCityId === toCityId) {
+      nextFromError = 'From and To cannot be the same'
+      nextToError = 'From and To cannot be the same'
+    }
+
+    setFromError(nextFromError)
+    setToError(nextToError)
+  }
 
   return (
     <div className="search-card">
       <div className="search-row">
         <div className="search-fields">
-          <label className="field">
+          <div className="field city-field">
             <span className="field-icon">🚌</span>
-            <input placeholder="From" aria-label="From" />
-          </label>
-          <label className="field">
+            <CityAutocomplete
+              id="from"
+              ariaLabel="From"
+              cities={cities}
+              value={fromText}
+              onValueChange={setFromText}
+              selectedCityId={fromCityId}
+              onSelectCity={(cityId) => setFromCityId(cityId)}
+              error={fromError}
+              closeSignal={closeSignal}
+            />
+          </div>
+          <button type="button" className="swap-btn" aria-label="Swap From and To" onClick={handleSwap}>
+            ⇄
+          </button>
+          <div className="field city-field">
             <span className="field-icon">🚌</span>
-            <input placeholder="To" aria-label="To" />
-          </label>
+            <CityAutocomplete
+              id="to"
+              ariaLabel="To"
+              cities={cities}
+              value={toText}
+              onValueChange={setToText}
+              selectedCityId={toCityId}
+              onSelectCity={(cityId) => setToCityId(cityId)}
+              error={toError}
+              closeSignal={closeSignal}
+            />
+          </div>
           <div className="field date-field">
             <span className="field-icon">📅</span>
             <div className="date-text">
@@ -54,7 +118,9 @@ function SearchCard() {
           />
         </div>
       </div>
-      <button type="button" className="search-btn">⌕ Search buses</button>
+      <button type="button" className="search-btn" onClick={handleSearch}>
+        ⌕ Search buses
+      </button>
     </div>
   )
 }
